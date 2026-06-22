@@ -414,3 +414,293 @@ h1, h2, h3, h4, .title-font {
   text-transform: uppercase;
 }
 
+/* Layout container */
+.container-premium {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+/* Section styling */
+.blueprint-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 6rem 0;
+  box-sizing: border-box;
+}
+
+/* Grids */
+.hero-grid, .simulator-grid, .security-grid, .tarifs-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hero-grid {
+  align-items: center;
+}
+
+.simulator-grid, .security-grid, .tarifs-grid {
+  align-items: start;
+}
+
+.col-12 { grid-column: span 12 / span 12; }
+.col-8 { grid-column: span 8 / span 8; }
+.col-7 { grid-column: span 7 / span 7; }
+.col-6 { grid-column: span 6 / span 6; }
+.col-5 { grid-column: span 5 / span 5; }
+.col-4 { grid-column: span 4 / span 4; }
+.col-3 { grid-column: span 3 / span 3; }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .hero-grid, .simulator-grid, .security-grid, .tarifs-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .col-12, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3 {
+    grid-column: span 12 / span 12;
+  }
+}
+
+/* Header & Nav */
+.header-nav {
+  position: fixed;
+  top: 2.5rem;
+  left: 0;
+  width: 100%;
+  z-index: 9990;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-gray);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--text-white);
+}
+
+@media (max-width: 1024px) {
+  .nav-links {
+    display: none;
+  }
+}
+
+/* Stepper Parcours Section */
+.parcours-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .parcours-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .parcours-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Technical Specification Section */
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Footer Trust Badges Grid */
+.footer-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .footer-trust-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-trust-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Flex and alignment utilities */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-gap-2 { gap: 0.5rem; }
+.flex-gap-3 { gap: 0.75rem; }
+.flex-gap-4 { gap: 1rem; }
+.flex-gap-6 { gap: 1.5rem; }
+.flex-gap-8 { gap: 2rem; }
+
+/* Input group styling */
+.input-group {
+  margin-bottom: 1.25rem;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-label {
+  font-size: 9px;
+  color: var(--text-gray);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.input-box {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(2, 4, 10, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.9rem 1rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 1.125rem;
+  font-weight: bold;
+  font-family: monospace;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-box:focus {
+  border-color: rgba(194, 155, 104, 0.3);
+}
+
+.input-suffix {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-gray);
+  font-weight: 800;
+  font-size: 12px;
+  font-family: monospace;
+  pointer-events: none;
+}
+
+/* Devise Selector buttons grid */
+.devise-btn-grid {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.devise-btn {
+  flex: 1;
+  padding: 0.75rem;
+  text-align: center;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Call to action button */
+.btn-cta {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+/* Warnings and security panels */
+.warn-panel {
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.03);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
