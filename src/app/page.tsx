@@ -33,7 +33,7 @@ export default function Home() {
   const [loaderConcept, setLoaderConcept] = useState('CONNECT');
   const [scrolled, setScrolled] = useState(false);
 
-  // --- SIMULATOR & WISE CALCULATOR STATES ---
+  // --- SIMULATOR & CALCULATOR STATES ---
   const [payMethod, setPayMethod] = useState<'mpesa' | 'airtel'>('mpesa');
   const [amountIn, setAmountIn] = useState('150000');
   const [amountOut, setAmountOut] = useState('51.85');
@@ -70,22 +70,22 @@ export default function Home() {
   useEffect(() => {
     let progress = 0;
     const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 12) + 5;
+      progress += Math.floor(Math.random() * 15) + 8;
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
         setTimeout(() => {
           setLoaderVisible(false);
-        }, 800);
+        }, 600);
       }
       setLoaderProgress(progress);
 
       if (progress > 30 && progress <= 65) {
-        setLoaderConcept('VERIFY');
+        setLoaderConcept('SECURE_GATE');
       } else if (progress > 65) {
-        setLoaderConcept('TRANSFER');
+        setLoaderConcept('STABLE_FLOW');
       }
-    }, 100);
+    }, 80);
 
     return () => clearInterval(interval);
   }, []);
@@ -93,7 +93,7 @@ export default function Home() {
   // --- SCROLL COMPRESSION HEADER ---
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
+      if (window.scrollY > 40) {
         setScrolled(true);
       } else {
         setScrolled(false);
@@ -150,48 +150,34 @@ export default function Home() {
 
     // Fade in Navigation & Hero Content
     gsap.from('.hero-reveal', {
-      y: 45,
+      y: 40,
       opacity: 0,
-      duration: 1,
-      stagger: 0.15,
+      duration: 0.8,
+      stagger: 0.12,
       ease: 'almkLaunch',
     });
 
-    // Pinned scroll for 'Comment ça marche'
-    if (quality === 'FULL') {
-      const steps = gsap.utils.toArray('.step-node-item');
-      steps.forEach((step: any) => {
-        gsap.fromTo(
-          step,
-          { opacity: 0.25, scale: 0.96 },
-          {
-            opacity: 1,
-            scale: 1,
-            scrollTrigger: {
-              trigger: step,
-              start: 'top 80%',
-              end: 'bottom 50%',
-              scrub: true,
-            },
-          }
-        );
-      });
-    }
+    // Pinned scroll / scroll reveals for sections
+    const blocks = gsap.utils.toArray('.blueprint-section');
+    blocks.forEach((block: any) => {
+      gsap.fromTo(
+        block.querySelectorAll('.reveal-on-scroll'),
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'almkSoft',
+          scrollTrigger: {
+            trigger: block,
+            start: 'top 80%',
+          },
+        }
+      );
+    });
 
-    // Connect Lines in Pricing calculation
-    if (quality !== 'ESSENTIAL' && calcRowRef.current) {
-      gsap.from('.calc-connector-line', {
-        scaleX: 0,
-        transformOrigin: 'left center',
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: calcRowRef.current,
-          start: 'top 85%',
-        },
-      });
-    }
-  }, [loaderVisible, quality]);
+  }, [loaderVisible]);
 
   // --- ACTIONS ---
   const handlePayMethodChange = (method: 'mpesa' | 'airtel') => {
@@ -295,13 +281,12 @@ export default function Home() {
   };
 
   return (
-    <div className="radial-glow-container min-h-screen text-[#f3f4f6] font-sans selection:bg-[#c29b68]/30 selection:text-white" style={{ backgroundColor: '#02040a' }}>
+    <div className="radial-glow-container min-h-screen text-[#f3f4f6] font-sans selection:bg-[#c29b68]/30 selection:text-white" style={{ backgroundColor: '#02040b' }}>
       
       {/* Decorative Aurora Glowing Background Blobs */}
-      <div className="glow-blob glow-bronze" style={{ top: '5%', left: '-5%', opacity: 0.15 }} />
-      <div className="glow-blob glow-blue" style={{ top: '35%', right: '-10%', opacity: 0.12 }} />
-      <div className="glow-blob glow-pink" style={{ bottom: '15%', left: '5%', opacity: 0.08 }} />
-      <div className="glow-blob glow-emerald" style={{ top: '65%', right: '15%', opacity: 0.12 }} />
+      <div className="glow-blob glow-bronze" style={{ top: '5%', left: '-5%', opacity: 0.08 }} />
+      <div className="glow-blob glow-blue" style={{ top: '35%', right: '-10%', opacity: 0.07 }} />
+      <div className="glow-blob glow-pink" style={{ bottom: '15%', left: '5%', opacity: 0.05 }} />
 
       {/* --- PRELOADER OVERLAY --- */}
       {loaderVisible && (
@@ -319,43 +304,42 @@ export default function Home() {
             justifyContent: 'center',
           }}
         >
-          <div style={{ textAlign: 'center' }}>
-            <svg viewBox="0 0 120 120" style={{ width: '80px', height: '80px', margin: '0 auto 1.5rem' }}>
+          <div style={{ textAlign: 'center' }} className="animate-fade-in">
+            <svg viewBox="0 0 120 120" style={{ width: '60px', height: '60px', margin: '0 auto 1.5rem' }}>
               <circle
                 cx="60"
                 cy="60"
                 r="50"
                 fill="none"
                 stroke="#c29b68"
-                strokeWidth="2.5"
+                strokeWidth="2"
                 style={{
                   strokeDasharray: '314',
                   strokeDashoffset: 314 - (314 * loaderProgress) / 100,
-                  transition: 'stroke-dashoffset 0.1s linear',
+                  transition: 'stroke-dashoffset 0.08s linear',
                 }}
               />
               <path
                 d="M40 80 L60 35 L80 80 M50 65 L70 65"
                 fill="none"
                 stroke="#c29b68"
-                strokeWidth="3.5"
+                strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f3f4f6', letterSpacing: '0.15em' }}>
+            <div style={{ fontSize: '1rem', fontWeight: 800, color: '#f3f4f6', letterSpacing: '0.2em' }}>
               ALMK
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#c29b68', letterSpacing: '0.25em', marginTop: '0.5rem' }}>
+            <div style={{ fontSize: '0.65rem', color: '#c29b68', letterSpacing: '0.3em', marginTop: '0.5rem' }}>
               {loaderConcept}
             </div>
             <div
               style={{
-                width: '180px',
-                height: '2px',
-                backgroundColor: 'rgba(255,255,255,0.08)',
-                margin: '1.5rem auto 0',
-                borderRadius: '2px',
+                width: '140px',
+                height: '1px',
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                margin: '1.25rem auto 0',
                 overflow: 'hidden',
               }}
             >
@@ -364,7 +348,7 @@ export default function Home() {
                   width: `${loaderProgress}%`,
                   height: '100%',
                   backgroundColor: '#c29b68',
-                  transition: 'width 0.1s linear',
+                  transition: 'width 0.08s linear',
                 }}
               />
             </div>
@@ -372,45 +356,28 @@ export default function Home() {
         </div>
       )}
 
-      {/* --- LIVE TRANSACTION TICKER --- */}
+      {/* --- TOP BRANDING BANNER --- */}
       <div className="live-ticker-wrap">
         <div className="live-ticker-track">
           {[1, 2].map((loopIdx) => (
             <React.Fragment key={loopIdx}>
               <div className="ticker-item">
-                <span className="ticker-badge bg-emerald-500/10 text-emerald-400">LIVE</span>
-                <span>Achat Réussi:</span>
-                <strong className="text-white">145.00 USDT</strong>
-                <span>par M-Pesa</span>
-                <span className="text-[#c29b68]">TX: 0x7c...2e</span>
-                <span className="text-gray-400">(il y a 1 min)</span>
+                <span className="ticker-badge bg-emerald-500/10 text-emerald-400">NETWORK OK</span>
+                <span>MPESA RDC ➔ TRC-20</span>
+                <span className="text-emerald-400">[99.98% UPTIME]</span>
               </div>
               <div className="ticker-item">
                 <span className="ticker-badge bg-blue-500/10 text-blue-400">RATE</span>
-                <span>Taux de change garanti :</span>
-                <strong className="text-white">1 USDT = 2800 CDF</strong>
+                <span>Index temps réel : 1 USDT = 2800 CDF</span>
                 <span className="live-flash-dot" />
               </div>
               <div className="ticker-item">
-                <span className="ticker-badge bg-emerald-500/10 text-emerald-400">LIVE</span>
-                <span>Achat Réussi:</span>
-                <strong className="text-white">350.00 USDT</strong>
-                <span>par Airtel Money</span>
-                <span className="text-[#c29b68]">TX: 0x9a...1a</span>
-                <span className="text-gray-400">(il y a 3 min)</span>
+                <span className="ticker-badge bg-emerald-500/10 text-emerald-400">SUCCESS</span>
+                <span>TX: 0x7c...2e | 145.00 USDT | Airtel CDF</span>
               </div>
               <div className="ticker-item">
-                <span className="ticker-badge bg-rose-500/10 text-rose-400">SECURITY</span>
-                <span>Passerelle TRC-20 opérationnelle</span>
-                <span className="text-emerald-400">[99.98% uptime]</span>
-              </div>
-              <div className="ticker-item">
-                <span className="ticker-badge bg-emerald-500/10 text-emerald-400">LIVE</span>
-                <span>Achat Réussi:</span>
-                <strong className="text-white">85.00 USDT</strong>
-                <span>par M-Pesa</span>
-                <span className="text-[#c29b68]">TX: 0x3d...8b</span>
-                <span className="text-gray-400">(il y a 5 min)</span>
+                <span className="ticker-badge bg-[#c29b68]/15 text-[#c29b68]">COMPLIANCE</span>
+                <span>BCC & CENAREF Régulé</span>
               </div>
             </React.Fragment>
           ))}
@@ -427,18 +394,18 @@ export default function Home() {
           width: '100%',
           zIndex: 9990,
           transition: 'all 0.3s ease',
-          backgroundColor: scrolled ? 'rgba(2, 4, 10, 0.85)' : 'transparent',
-          borderBottom: scrolled ? '1px solid rgba(194,155,104,0.15)' : '1px solid transparent',
+          backgroundColor: scrolled ? 'rgba(2, 4, 10, 0.95)' : 'transparent',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
           backdropFilter: scrolled ? 'blur(16px)' : 'none',
-          padding: scrolled ? '0.75rem 2rem' : '1.25rem 2rem',
+          padding: '1.25rem 2rem',
         }}
       >
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
           <div
             onClick={() => transitionTo('/')}
-            className="cursor-pointer flex items-center gap-2.5"
+            className="cursor-pointer flex items-center gap-3"
           >
-            <svg viewBox="0 0 100 100" style={{ width: '36px', height: '36px' }}>
+            <svg viewBox="0 0 100 100" style={{ width: '28px', height: '28px' }}>
               <path
                 d="M20 80 L50 20 L80 80 M35 55 L65 55"
                 fill="none"
@@ -448,150 +415,148 @@ export default function Home() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="text-xl font-extrabold tracking-wider text-white">
-              ALMK <span className="text-[#c29b68] text-xs font-semibold align-super">FLOW</span>
+            <span className="text-lg font-extrabold tracking-widest text-white uppercase">
+              ALMK <span className="text-[#c29b68] text-[9px] font-semibold align-super">FLOW</span>
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#devis" className="text-sm font-semibold text-gray-400 hover:text-[#c29b68] transition-colors no-underline">Calculateur</a>
-            <a href="#how-to" className="text-sm font-semibold text-gray-400 hover:text-[#c29b68] transition-colors no-underline">Parcours</a>
-            <a href="#rails" className="text-sm font-semibold text-gray-400 hover:text-[#c29b68] transition-colors no-underline">Rails Locaux</a>
-            <a href="#kyc" className="text-sm font-semibold text-gray-400 hover:text-[#c29b68] transition-colors no-underline">Limites</a>
-            <a href="#security" className="text-sm font-semibold text-gray-400 hover:text-[#c29b68] transition-colors no-underline">Sécurité</a>
-            <a href="#tarifs" className="text-sm font-semibold text-gray-400 hover:text-[#c29b68] transition-colors no-underline">Frais</a>
+          <nav className="hidden lg:flex items-center gap-10">
+            <a href="#devis" className="text-[11px] font-extrabold tracking-wider uppercase text-gray-400 hover:text-white transition-colors no-underline">Calculateur</a>
+            <a href="#parcours" className="text-[11px] font-extrabold tracking-wider uppercase text-gray-400 hover:text-white transition-colors no-underline">Parcours</a>
+            <a href="#technique" className="text-[11px] font-extrabold tracking-wider uppercase text-gray-400 hover:text-white transition-colors no-underline">Fiche Technique</a>
+            <a href="#sécurité" className="text-[11px] font-extrabold tracking-wider uppercase text-gray-400 hover:text-white transition-colors no-underline">Sécurité</a>
+            <a href="#tarifs" className="text-[11px] font-extrabold tracking-wider uppercase text-gray-400 hover:text-white transition-colors no-underline">Tarifs</a>
           </nav>
 
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <span className="hidden lg:inline text-xs text-gray-400 font-mono">
+                <span className="hidden xl:inline text-[10px] text-gray-400 font-mono">
                   {user.email || user.phoneNumber || user.uid.substring(0, 8)}
                 </span>
-                <MagneticButton
+                <button
                   onClick={() => transitionTo('/dashboard')}
-                  style={{
-                    backgroundColor: 'transparent',
-                    border: '1px solid #c29b68',
-                    color: '#c29b68',
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                  }}
+                  className="bg-transparent border border-[#c29b68]/30 text-[#c29b68] px-4 py-2 rounded text-[11px] font-extrabold tracking-wider uppercase cursor-pointer hover:border-[#c29b68] hover:bg-[#c29b68]/5 transition-all"
                 >
                   Dashboard
-                </MagneticButton>
-                <MagneticButton
+                </button>
+                <button
                   onClick={logOut}
-                  style={{
-                    backgroundColor: 'rgba(239, 68, 68, 0.08)',
-                    border: '1px solid rgba(239, 68, 68, 0.2)',
-                    color: '#f87171',
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                  }}
+                  className="bg-transparent border border-rose-500/20 text-rose-400 px-4 py-2 rounded text-[11px] font-extrabold tracking-wider uppercase cursor-pointer hover:bg-rose-500/5 transition-all"
                 >
                   Sortir
-                </MagneticButton>
+                </button>
               </>
             ) : (
               <>
-                <MagneticButton
+                <button
                   onClick={() => setIsAuthOpen(true)}
-                  style={{
-                    backgroundColor: 'transparent',
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    color: '#f3f4f6',
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                  }}
+                  className="bg-transparent border border-white/10 text-white px-5 py-2 rounded text-[11px] font-extrabold tracking-wider uppercase cursor-pointer hover:border-white/20 transition-all"
                 >
                   Connexion
-                </MagneticButton>
-                <MagneticButton
+                </button>
+                <button
                   onClick={() => transitionTo('/status')}
-                  style={{
-                    backgroundColor: '#c29b68',
-                    border: 'none',
-                    color: '#02040a',
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: '8px',
-                    fontWeight: 700,
-                    fontSize: '0.875rem',
-                    cursor: 'pointer',
-                  }}
+                  className="bg-[#c29b68] border-none text-[#02040a] px-5 py-2 rounded text-[11px] font-extrabold tracking-wider uppercase cursor-pointer hover:opacity-90 transition-all"
                 >
-                  Acheter
-                </MagneticButton>
+                  Uptime
+                </button>
               </>
             )}
           </div>
         </div>
       </header>
 
-      {/* --- HERO & INTERACTIVE CALCULATOR SECTION --- */}
-      <section
-        id="devis"
-        className="relative min-h-screen flex items-center pt-32 pb-16 overflow-hidden"
-      >
-        <WebGLScene />
+      {/* ========================================================
+          SECTION 1: HERO SCREEN (Minimalist 3D Core Spotlight)
+          ======================================================== */}
+      <section className="relative min-h-screen flex items-center blueprint-border-b pt-24">
+        {/* Left Vertical Line Grid */}
+        <div className="absolute left-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+        <div className="absolute right-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
 
-        <div className="max-w-[1200px] mx-auto w-full px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
-          
-          {/* Left Text Column */}
-          <div className="lg:col-span-7">
-            <span
-              className="hero-reveal text-xs font-extrabold text-[#c29b68] uppercase tracking-widest block mb-3"
-              style={{ letterSpacing: '0.2em' }}
-            >
-              🚀 PASSERELLE BLOCKCHAIN AFRIQUE CENTRALE
-            </span>
-            <h1
-              className="hero-reveal font-extrabold tracking-tight text-white mb-6 text-6xl lg:text-7xl"
-              style={{ fontFamily: "'Outfit', sans-serif", lineHeight: 1.1 }}
-            >
-              Achetez vos USDT <br />
-              <span className="bg-gradient-to-r from-[#c29b68] to-[#d9b48f] bg-clip-text text-transparent">
-                Payez localement.
+        <div className="max-w-[1400px] mx-auto w-full px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+          {/* Brand Presentation Column */}
+          <div className="lg:col-span-6 flex flex-col justify-center hero-reveal">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="h-1.5 w-1.5 bg-[#c29b68] rounded-full" />
+              <span className="text-[10px] font-extrabold tracking-[0.3em] text-[#c29b68] uppercase">
+                ALMK CORE ENGINE
               </span>
-            </h1>
-            <p className="hero-reveal text-base text-gray-400 mb-8 max-w-xl leading-relaxed">
-              ALMK Flow convertit instantanément vos Francs Congolais (CDF) depuis M-Pesa ou Airtel Money en USDT (TRC-20) directement vers votre portefeuille crypto. Une exécution automatisée, transparente et 100% sécurisée.
+            </div>
+
+            <div className="flex flex-col mb-8 select-none">
+              <h1 className="display-title text-outline-premium">ALMK</h1>
+              <h1 className="display-title text-white">CORE</h1>
+              <h1 className="display-title text-[#c29b68]">FLOW</h1>
+            </div>
+
+            <p className="text-gray-400 text-sm leading-relaxed max-w-md mb-10">
+              Passerelle financière cinématique et automatisée reliant l'Afrique Centrale à la blockchain globale. Convertissez instantanément vos devises locales Mobiles Money en stablecoins USDT vers votre portefeuille.
             </p>
-            
-            {/* Live Trust Metrics */}
-            <div className="hero-reveal grid grid-cols-3 gap-6 pt-6 border-t border-white/10">
-              <div>
-                <h4 className="text-2xl font-extrabold text-white">&lt; 3 min</h4>
-                <p className="text-xs text-gray-400 mt-1">Délai Moyen de Livraison</p>
-              </div>
-              <div>
-                <h4 className="text-2xl font-extrabold text-[#c29b68]">0%</h4>
-                <p className="text-xs text-gray-400 mt-1">Frais de Change Cachés</p>
-              </div>
-              <div>
-                <h4 className="text-2xl font-extrabold text-emerald-400">99.98%</h4>
-                <p className="text-xs text-gray-400 mt-1">Disponibilité des Rails</p>
-              </div>
+
+            <div className="flex gap-4">
+              <a href="#devis" className="no-underline">
+                <button className="bg-[#c29b68] text-black border-none px-8 py-4 rounded text-xs font-extrabold tracking-widest uppercase cursor-pointer hover:opacity-95 transition-all">
+                  Lancer le Convertisseur
+                </button>
+              </a>
+              <a href="#parcours" className="no-underline">
+                <button className="bg-transparent border border-white/10 text-white px-8 py-4 rounded text-xs font-extrabold tracking-widest uppercase cursor-pointer hover:border-white/20 transition-all">
+                  Découvrir
+                </button>
+              </a>
             </div>
           </div>
 
-          {/* Right Calculator Column (Wise-Style Stepper) */}
-          <div className="hero-reveal lg:col-span-5" ref={simPanelRef}>
-            <InteractiveCard className="glass-panel w-full mx-auto shadow-2xl p-8" style={{ border: '1px solid rgba(194,155,104,0.25)' }}>
+          {/* 3D Asset Spotlight Column */}
+          <div className="lg:col-span-6 flex justify-center items-center relative hero-reveal">
+            <div className="w-full max-w-[500px] aspect-square rounded-xl border border-white/5 bg-black/40 corner-ticks relative overflow-hidden flex items-center justify-center">
+              <div className="tick-tr" />
+              <div className="tick-bl" />
+              
+              {/* WebGL Scene Container */}
+              <div className="absolute inset-0 w-full h-full">
+                <WebGLScene />
+              </div>
+              
+              {/* Overlay Blueprint Info Overlay */}
+              <div className="absolute bottom-6 left-6 font-mono text-[9px] text-gray-500 flex flex-col gap-1 z-20 bg-black/60 px-3 py-2 rounded border border-white/5">
+                <div>SYS_STATUS: OPERATIONAL</div>
+                <div>CORE_TEMP: OPTIMAL</div>
+                <div>ENTROPY_KEY: 0x8a..7c</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          SECTION 2: CONVERTISSEUR & LIVE EVENT LOG (100vh)
+          ======================================================== */}
+      <section id="devis" className="relative min-h-screen flex items-center blueprint-border-b py-24 blueprint-section">
+        <div className="absolute left-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+        <div className="absolute right-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+
+        <div className="max-w-[1400px] mx-auto w-full px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+          
+          {/* Wise Calculator container */}
+          <div className="lg:col-span-6 reveal-on-scroll">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#c29b68] uppercase">01 / TRANSACTION SIMULATOR</span>
+            </div>
+            
+            <h2 className="text-3xl font-extrabold text-white mb-6 uppercase tracking-tight">Convertir mes fonds</h2>
+            
+            <div className="glass-panel p-8 corner-ticks relative border border-white/5">
+              <div className="tick-tr" />
+              <div className="tick-bl" />
+
               <div className="mb-6 flex justify-between items-center">
-                <h3 className="text-lg font-extrabold text-white" style={{ fontFamily: "'Outfit', sans-serif" }}>Acheter des USDT</h3>
+                <span className="text-xs font-mono text-gray-400">CDF ➔ USDT (TRC-20)</span>
                 {quoteLocked ? (
-                  <span className="text-rose-500 text-xs font-bold font-mono bg-rose-500/10 px-2.5 py-1 rounded">
-                    ⏱️ EXPIRE DANS {quoteTimer}S
+                  <span className="text-rose-500 text-[10px] font-bold font-mono bg-rose-500/10 px-2 py-0.5 rounded">
+                    QUOTE SECURED: {quoteTimer}S
                   </span>
                 ) : (
                   <span className="live-flash-dot" />
@@ -599,37 +564,37 @@ export default function Home() {
               </div>
 
               {/* Devise Picker */}
-              <div className="flex gap-3 mb-5">
+              <div className="flex gap-2.5 mb-6">
                 <div
                   onClick={() => !quoteLocked && handlePayMethodChange('mpesa')}
-                  className="flex-1 py-2.5 text-center cursor-pointer rounded-lg font-extrabold text-xs transition-all duration-300"
+                  className="flex-1 py-3 text-center cursor-pointer rounded border font-mono text-[11px] font-extrabold tracking-wider uppercase transition-all duration-300"
                   style={{
                     cursor: quoteLocked ? 'not-allowed' : 'pointer',
-                    border: payMethod === 'mpesa' ? '1.5px solid #c29b68' : '1px solid rgba(255,255,255,0.08)',
-                    backgroundColor: payMethod === 'mpesa' ? 'rgba(194, 155, 104, 0.05)' : 'transparent',
+                    borderColor: payMethod === 'mpesa' ? '#c29b68' : 'rgba(255,255,255,0.05)',
+                    backgroundColor: payMethod === 'mpesa' ? 'rgba(194, 155, 104, 0.04)' : 'transparent',
                     color: payMethod === 'mpesa' ? '#c29b68' : '#9ca3af',
                   }}
                 >
-                  M-Pesa (CDF)
+                  M-Pesa CDF
                 </div>
                 <div
                   onClick={() => !quoteLocked && handlePayMethodChange('airtel')}
-                  className="flex-1 py-2.5 text-center cursor-pointer rounded-lg font-extrabold text-xs transition-all duration-300"
+                  className="flex-1 py-3 text-center cursor-pointer rounded border font-mono text-[11px] font-extrabold tracking-wider uppercase transition-all duration-300"
                   style={{
                     cursor: quoteLocked ? 'not-allowed' : 'pointer',
-                    border: payMethod === 'airtel' ? '1.5px solid #c29b68' : '1px solid rgba(255,255,255,0.08)',
-                    backgroundColor: payMethod === 'airtel' ? 'rgba(194, 155, 104, 0.05)' : 'transparent',
+                    borderColor: payMethod === 'airtel' ? '#c29b68' : 'rgba(255,255,255,0.05)',
+                    backgroundColor: payMethod === 'airtel' ? 'rgba(194, 155, 104, 0.04)' : 'transparent',
                     color: payMethod === 'airtel' ? '#c29b68' : '#9ca3af',
                   }}
                 >
-                  Airtel CDF
+                  Airtel Money CDF
                 </div>
               </div>
 
-              {/* Amount In Input */}
-              <div className="relative mb-4">
-                <label className="text-[10px] text-[#c29b68] font-bold block mb-1.5 tracking-wider">
-                  VOUS PAYEZ
+              {/* Amount In */}
+              <div className="relative mb-5">
+                <label className="text-[9px] text-gray-500 font-extrabold block mb-2 tracking-widest uppercase">
+                  Montant en Francs Congolais
                 </label>
                 <div className="relative">
                   <input
@@ -637,448 +602,402 @@ export default function Home() {
                     disabled={quoteLocked}
                     value={amountIn}
                     onChange={(e) => setAmountIn(e.target.value)}
-                    className="w-full bg-[#02040a]/60 border border-white/10 px-4 py-3 rounded-lg text-white text-xl font-bold outline-none focus:border-[#c29b68]/40 transition-colors"
+                    className="w-full bg-black/60 border border-white/5 px-4 py-3.5 rounded text-white text-lg font-bold font-mono outline-none focus:border-[#c29b68]/30 transition-colors"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-extrabold text-sm">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-extrabold text-xs font-mono">
                     CDF
                   </span>
                 </div>
               </div>
 
-              {/* Wise-Style Stepper Calculator details */}
+              {/* Stepper Details */}
               <div className="calculator-stepper">
                 <div className="stepper-node">
                   <div className="stepper-dot">−</div>
                   <div className="stepper-content">
                     Frais de traitement ALMK (1.5%) :{' '}
-                    <strong className="text-white">{calcFee.toLocaleString('fr-FR')} CDF</strong>
+                    <strong className="text-white font-mono">{calcFee.toLocaleString('fr-FR')} CDF</strong>
                   </div>
                 </div>
                 <div className="stepper-node">
                   <div className="stepper-dot">=</div>
                   <div className="stepper-content">
                     Montant net converti :{' '}
-                    <strong className="text-white">{calcNet.toLocaleString('fr-FR')} CDF</strong>
+                    <strong className="text-white font-mono">{calcNet.toLocaleString('fr-FR')} CDF</strong>
                   </div>
                 </div>
                 <div className="stepper-node active">
                   <div className="stepper-dot" style={{ border: 'none' }}><span className="live-flash-dot" /></div>
                   <div className="stepper-content">
                     Taux garanti (15s) :{' '}
-                    <strong className="text-[#c29b68]">1 USDT = {calcRate} CDF</strong>
+                    <strong className="text-[#c29b68] font-mono">1 USDT = {calcRate} CDF</strong>
                   </div>
                 </div>
                 <div className="stepper-node">
                   <div className="stepper-dot">−</div>
                   <div className="stepper-content">
-                    Frais réseau blockchain : <strong className="text-rose-400">1.2 USDT</strong>
+                    Frais réseau blockchain : <strong className="text-rose-400 font-mono">1.2 USDT</strong>
                   </div>
                 </div>
               </div>
 
-              {/* Amount Out Output */}
-              <div className="relative mb-5">
-                <label className="text-[10px] text-[#c29b68] font-bold block mb-1.5 tracking-wider">
-                  VOUS RECEVEZ
+              {/* Amount Out */}
+              <div className="relative mb-6">
+                <label className="text-[9px] text-gray-500 font-extrabold block mb-2 tracking-widest uppercase">
+                  USDT Estimés
                 </label>
-                <div className="flex items-center bg-[#02040a]/40 border border-white/5 px-4 py-3 rounded-lg">
-                  <RollingNumber value={amountOut} className="font-extrabold text-white text-xl" />
-                  <span className="ml-auto text-emerald-400 font-extrabold text-base">
+                <div className="flex items-center bg-black/40 border border-white/5 px-4 py-3.5 rounded">
+                  <RollingNumber value={amountOut} className="font-bold text-white text-lg font-mono" />
+                  <span className="ml-auto text-emerald-400 font-extrabold text-xs font-mono">
                     USDT
                   </span>
                 </div>
                 {calcSavings > 0 && (
-                  <div className="text-[10px] text-emerald-400 mt-2 font-semibold flex items-center gap-1">
-                    <span>💡</span> Économisez environ {Math.round(calcSavings).toLocaleString('fr-FR')} CDF par rapport aux banques.
+                  <div className="text-[9px] text-emerald-400/80 mt-2 font-mono flex items-center gap-1.5">
+                    <span>⚡</span> Économie de {Math.round(calcSavings).toLocaleString('fr-FR')} CDF face aux intermédiaires bancaires.
                   </div>
                 )}
               </div>
 
-              {/* Locked Quote inputs */}
+              {/* Lock Quote Fields */}
               {quoteLocked && (
-                <div className="flex flex-col gap-3 mb-5 animate-slide-up">
-                  <div className="px-3.5 py-3 bg-[#c29b68]/5 rounded-lg border border-[#c29b68]/15 text-xs">
-                    <div className="flex justify-between mb-1.5">
-                      <span className="text-gray-400">ID Devis :</span>
-                      <span className="font-mono font-bold text-white">{quoteHash}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Réseau d'envoi :</span>
-                      <span className="text-white font-bold">TRC-20 (TRON)</span>
-                    </div>
+                <div className="flex flex-col gap-4 mb-6 animate-slide-up bg-black/30 p-4 rounded border border-[#c29b68]/10">
+                  <div className="flex justify-between text-[10px] font-mono text-gray-400 border-b border-white/5 pb-2">
+                    <span>DEV_HASH :</span>
+                    <span className="font-bold text-[#c29b68]">{quoteHash}</span>
                   </div>
-                  
                   <div>
-                    <label className="text-[10px] text-[#c29b68] font-bold block mb-1.5">
-                      ADRESSE DE RÉCEPTION USDT (TRC-20)
+                    <label className="text-[9px] text-gray-500 font-extrabold block mb-1.5 tracking-widest uppercase">
+                      ADRESSE BLOCKCHAIN DE RÉCEPTION (TRC-20)
                     </label>
                     <input
                       type="text"
                       placeholder="Ex: TXyZ9... (Doit commencer par T)"
                       value={recipientAddress}
                       onChange={(e) => setRecipientAddress(e.target.value)}
-                      className="w-full bg-[#02040a] border border-[#c29b68]/30 px-3.5 py-2.5 rounded-lg text-white text-xs font-mono outline-none focus:border-[#c29b68] transition-colors"
+                      className="w-full bg-black border border-white/10 px-4 py-2.5 rounded text-white text-xs font-mono outline-none focus:border-[#c29b68]/40 transition-colors"
                     />
                   </div>
                 </div>
               )}
 
-              {/* Submit CTA */}
+              {/* Action Button */}
               <button
                 onClick={handleLockQuote}
-                className="w-full py-3.5 rounded-lg text-[#02040a] font-extrabold text-sm border-none cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 hover:opacity-90 shadow-lg shadow-[#c29b68]/10"
+                className="w-full py-4 rounded text-black font-extrabold text-xs tracking-widest uppercase border-none cursor-pointer flex items-center justify-center gap-2 transition-all hover:opacity-90"
                 style={{
                   backgroundColor: quoteLocked ? '#10b981' : '#c29b68',
                 }}
               >
-                {quoteLocked ? (txSaving ? 'Création...' : 'Confirmer le transfert') : 'Générer mon devis'}
+                {quoteLocked ? (txSaving ? 'PROCESS...' : 'Confirmer le transfert') : 'Obtenir le Taux de change'}
               </button>
-            </InteractiveCard>
+            </div>
           </div>
+
+          {/* High-tech Operations Panel Column */}
+          <div className="lg:col-span-6 reveal-on-scroll">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#c29b68] uppercase">02 / CORE OPERATIONS HANDSHAKE</span>
+            </div>
+            
+            <h2 className="text-3xl font-extrabold text-white mb-6 uppercase tracking-tight">Handshake Moniteur</h2>
+            
+            <div className="cyber-terminal rounded-xl overflow-hidden flex flex-col shadow-2xl p-6 relative border border-white/5" style={{ minHeight: '380px' }}>
+              <div className="flex justify-between items-center border-b border-white/5 pb-4 mb-4">
+                <div className="flex gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">LIVE_OPERATIONS_FEED</span>
+                </div>
+                <span className="text-[9px] font-mono text-gray-500">SYS_V: 10.92</span>
+              </div>
+
+              <div className="flex-1 flex flex-col justify-between font-mono text-[11px] text-[#6ee7b7]">
+                <div className="flex flex-col gap-2.5">
+                  <div className="text-gray-500">&gt; initialising web_socket connection...</div>
+                  <div className="text-[#c29b68]">&gt; channel connected to Vodacom RDC API. latency: 12ms</div>
+                  <div>&gt; gas fee calculation complete: 1.20 USDT</div>
+                  <div>&gt; exchange rate matching Binance market feed: 2,800 CDF/USDT</div>
+                  <div className="text-gray-500">&gt; security layers check: Fireblocks vault secure.</div>
+                  <div className="text-emerald-400 font-bold">&gt; gateway: online. Waiting for user transfer.</div>
+                </div>
+
+                <div className="border-t border-white/5 pt-4 mt-4">
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div className="border border-white/5 p-2 rounded">
+                      <div className="text-gray-500 text-[8px] uppercase tracking-wider">M-Pesa status</div>
+                      <div className="text-emerald-400 font-bold text-xs mt-1">ONLINE</div>
+                    </div>
+                    <div className="border border-white/5 p-2 rounded">
+                      <div className="text-gray-500 text-[8px] uppercase tracking-wider">Airtel status</div>
+                      <div className="text-emerald-400 font-bold text-xs mt-1">ONLINE</div>
+                    </div>
+                    <div className="border border-white/5 p-2 rounded">
+                      <div className="text-gray-500 text-[8px] uppercase tracking-wider">Vault status</div>
+                      <div className="text-emerald-400 font-bold text-xs mt-1">LOCKED</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* --- COMMENT ÇA MARCHE --- */}
-      <section id="how-to" className="py-32 border-t border-white/5">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <SectionIntro
-            tagline="PARCOURS D'ÉCHANGE"
-            title="Comment ça marche ?"
-            description="Le parcours de vos fonds locaux jusqu'à leur livraison sur votre adresse blockchain."
-          />
+      {/* ========================================================
+          SECTION 3: PARCOURS / STEPPER (100vh Layout)
+          ======================================================= */}
+      <section id="parcours" className="relative min-h-screen flex items-center blueprint-border-b py-24 blueprint-section">
+        <div className="absolute left-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+        <div className="absolute right-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
 
-          <div ref={stepsContainerRef} className="flex flex-col gap-20 relative mt-16">
+        <div className="max-w-[1400px] mx-auto w-full px-8">
+          <div className="flex items-center gap-2 mb-4 reveal-on-scroll">
+            <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#c29b68] uppercase">03 / FLOW PARCOURS</span>
+          </div>
+          
+          <h2 className="text-4xl font-extrabold text-white mb-16 uppercase tracking-tight reveal-on-scroll">Étapes du Transfert</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 reveal-on-scroll">
+            
             {/* Step 1 */}
-            <div className="step-node-item grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
+            <div className="glass-panel p-6 border border-white/5 corner-ticks relative flex flex-col justify-between" style={{ minHeight: '220px' }}>
+              <div className="tick-tr" />
               <div>
-                <span className="text-5xl font-extrabold text-[#c29b68]/10 leading-none">01</span>
-                <h3 className="text-2xl font-extrabold text-white mt-2 mb-4">Simuler et Verrouiller</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  Indiquez le montant en Francs Congolais (CDF). Notre moteur interroge instantanément les cours globaux de l'USDT et sécurise le taux de change pendant 15 secondes pour vous protéger des fluctuations du marché.
+                <span className="text-outline-premium text-4xl font-mono font-bold">01</span>
+                <h4 className="text-sm font-extrabold text-white uppercase mt-4 mb-2 tracking-wide">Simulation</h4>
+                <p className="text-gray-400 text-[11px] leading-relaxed">
+                  Saisissez les Francs Congolais (CDF) et récupérez notre taux garanti stable sans frais cachés.
                 </p>
               </div>
-              <InteractiveCard className="glass-panel p-8 flex justify-center items-center min-h-[180px] shadow-lg">
-                <span className="text-3xl font-extrabold text-[#c29b68]">CDF ➔ USDT</span>
-              </InteractiveCard>
+              <div className="text-[9px] font-mono text-[#c29b68] mt-4 uppercase">Lock: 15s</div>
             </div>
 
             {/* Step 2 */}
-            <div className="step-node-item grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
+            <div className="glass-panel p-6 border border-white/5 corner-ticks relative flex flex-col justify-between" style={{ minHeight: '220px' }}>
+              <div className="tick-tr" />
               <div>
-                <span className="text-5xl font-extrabold text-[#c29b68]/10 leading-none">02</span>
-                <h3 className="text-2xl font-extrabold text-white mt-2 mb-4">Vérification Réseau</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  Nous vérifions instantanément que l'adresse USDT fournie (format TRC-20) est valide et active sur la blockchain TRON afin de bloquer tout envoi vers un nœud erroné.
+                <span className="text-outline-premium text-4xl font-mono font-bold">02</span>
+                <h4 className="text-sm font-extrabold text-white uppercase mt-4 mb-2 tracking-wide">Adresse</h4>
+                <p className="text-gray-400 text-[11px] leading-relaxed">
+                  Renseignez l'adresse de réception USDT de votre portefeuille blockchain.
                 </p>
               </div>
-              <InteractiveCard className="glass-panel p-8 flex justify-center items-center min-h-[180px] shadow-lg">
-                <AnimatedStatus status="PAYMENT_UNDER_REVIEW" message="Nœud récepteur en cours d'analyse..." />
-              </InteractiveCard>
+              <div className="text-[9px] font-mono text-[#c29b68] mt-4 uppercase">Network check</div>
             </div>
 
             {/* Step 3 */}
-            <div className="step-node-item grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
+            <div className="glass-panel p-6 border border-white/5 corner-ticks relative flex flex-col justify-between" style={{ minHeight: '220px' }}>
+              <div className="tick-tr" />
               <div>
-                <span className="text-5xl font-extrabold text-[#c29b68]/10 leading-none">03</span>
-                <h3 className="text-2xl font-extrabold text-white mt-2 mb-4">Dépôt Local Rapide</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  Procédez au transfert CDF via votre application ou menu Mobile Money habituel (M-Pesa / Airtel Money). Vos fonds arrivent sur nos comptes séquestres locaux automatisés.
+                <span className="text-outline-premium text-4xl font-mono font-bold">03</span>
+                <h4 className="text-sm font-extrabold text-white uppercase mt-4 mb-2 tracking-wide">Dépôt Telco</h4>
+                <p className="text-gray-400 text-[11px] leading-relaxed">
+                  Envoyez les fonds CDF depuis votre menu mobile (M-Pesa / Airtel Money).
                 </p>
               </div>
-              <InteractiveCard className="glass-panel p-8 flex justify-center items-center min-h-[180px] shadow-lg">
-                <AnimatedStatus status="AWAITING_PAYMENT" message="Dépôt Telco local requis..." />
-              </InteractiveCard>
+              <div className="text-[9px] font-mono text-[#c29b68] mt-4 uppercase">Telco secure</div>
             </div>
 
             {/* Step 4 */}
-            <div className="step-node-item grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
+            <div className="glass-panel p-6 border border-white/5 corner-ticks relative flex flex-col justify-between" style={{ minHeight: '220px' }}>
+              <div className="tick-tr" />
               <div>
-                <span className="text-5xl font-extrabold text-[#c29b68]/10 leading-none">04</span>
-                <h3 className="text-2xl font-extrabold text-white mt-2 mb-4">Validation Automatique</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  Nos connexions directes aux API Telco détectent la confirmation de votre transaction de paiement. La commande est immédiatement validée par notre validateur central.
+                <span className="text-outline-premium text-4xl font-mono font-bold">04</span>
+                <h4 className="text-sm font-extrabold text-white uppercase mt-4 mb-2 tracking-wide">Validation</h4>
+                <p className="text-gray-400 text-[11px] leading-relaxed">
+                  Nos serveurs API valident instantanément la réception du paiement Mobile Money.
                 </p>
               </div>
-              <InteractiveCard className="glass-panel p-8 flex justify-center items-center min-h-[180px] shadow-lg">
-                <AnimatedStatus status="PAYMENT_CONFIRMED" message="Paiement local reçu." />
-              </InteractiveCard>
+              <div className="text-[9px] font-mono text-[#c29b68] mt-4 uppercase">Async verification</div>
             </div>
 
             {/* Step 5 */}
-            <div className="step-node-item grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
+            <div className="glass-panel p-6 border border-white/5 corner-ticks relative flex flex-col justify-between" style={{ minHeight: '220px' }}>
+              <div className="tick-tr" />
               <div>
-                <span className="text-5xl font-extrabold text-[#c29b68]/10 leading-none">05</span>
-                <h3 className="text-2xl font-extrabold text-white mt-2 mb-4">Libération Blockchain</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  ALMK Core libère automatiquement l'équivalent en jetons USDT depuis notre réserve globale de liquidité et l'expédie vers votre portefeuille. Le hash de la transaction (TXID) est généré en direct.
+                <span className="text-outline-premium text-4xl font-mono font-bold">05</span>
+                <h4 className="text-sm font-extrabold text-white uppercase mt-4 mb-2 tracking-wide">USDT Reçus</h4>
+                <p className="text-gray-400 text-[11px] leading-relaxed">
+                  Les tokens USDT sont libérés de la réserve et expédiés vers votre portefeuille.
                 </p>
               </div>
-              <InteractiveCard className="glass-panel p-8 flex justify-center items-center min-h-[180px] shadow-lg">
-                <AnimatedStatus status="COMPLETED" message="Tokens expédiés avec succès !" />
-              </InteractiveCard>
+              <div className="text-[9px] font-mono text-[#10b981] mt-4 uppercase font-bold">Done in &lt; 3min</div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* --- LOCAL RAILS --- */}
-      <section id="rails" className="py-32 border-t border-white/5 bg-[#02040a]/40">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <SectionIntro
-            tagline="RAILS MONÉTAIRES DIRECTS"
-            title="Connexion Réseaux Locaux"
-            description="Visualisez et survolez la passerelle d'acheminement qui transfère vos dépôts vers le Secure Core d'ALMK."
-          />
+      {/* ========================================================
+          SECTION 4: TECHNICAL SHEETS (Rails, Networks, Tiers Grid)
+          ======================================================== */}
+      <section id="technique" className="relative min-h-screen flex items-center blueprint-border-b py-24 blueprint-section">
+        <div className="absolute left-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+        <div className="absolute right-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-16">
+        <div className="max-w-[1400px] mx-auto w-full px-8">
+          <div className="flex items-center gap-2 mb-4 reveal-on-scroll">
+            <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#c29b68] uppercase">04 / SPECIFICATIONS & LIMITS</span>
+          </div>
+          
+          <h2 className="text-4xl font-extrabold text-white mb-16 uppercase tracking-tight reveal-on-scroll">Fiche Technique</h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch reveal-on-scroll">
             
-            {/* Map visualization */}
-            <div className="relative h-[350px] bg-[#02040a]/80 rounded-2xl border border-[#c29b68]/15 flex items-center justify-center overflow-hidden shadow-inner">
-              <div className="absolute inset-0 w-full h-full">
-                {/* M-Pesa line */}
-                <DrawnPath
-                  d="M50 300 C100 200, 150 150, 200 150"
-                  viewBox="0 0 400 400"
-                  strokeWidth={3}
-                  color={activeRail === 'mpesa' ? '#3b82f6' : 'rgba(59, 130, 246, 0.2)'}
-                  pulse={activeRail === 'mpesa'}
-                  pulseColor="#3b82f6"
-                  pulseDuration={1.5}
-                />
-                {/* Airtel Money line */}
-                <DrawnPath
-                  d="M350 300 C300 200, 250 150, 200 150"
-                  viewBox="0 0 400 400"
-                  strokeWidth={3}
-                  color={activeRail === 'airtel' ? '#ec4899' : 'rgba(236, 72, 153, 0.2)'}
-                  pulse={activeRail === 'airtel'}
-                  pulseColor="#ec4899"
-                  pulseDuration={1.5}
-                />
-              </div>
-
-              <div className="relative w-16 h-16 rounded-full border-2 border-[#c29b68] bg-[#02040a] flex items-center justify-center font-bold text-xs text-[#c29b68] shadow-[0_0_30px_rgba(194,155,104,0.25)]">
-                CORE
-              </div>
-            </div>
-
-            {/* Content controls */}
-            <div className="flex flex-col gap-6">
-              <div
-                onMouseEnter={() => setActiveRail('mpesa')}
-                onMouseLeave={() => setActiveRail('none')}
-                className="p-6 rounded-xl border cursor-pointer transition-all duration-300"
-                style={{
-                  border: activeRail === 'mpesa' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.06)',
-                  backgroundColor: activeRail === 'mpesa' ? 'rgba(59, 130, 246, 0.04)' : 'rgba(255,255,255,0.01)',
-                }}
-              >
-                <h4 className="text-lg font-extrabold text-[#3b82f6] mb-2">M-Pesa (Vodacom)</h4>
-                <p className="text-gray-400 text-xs leading-relaxed">
-                  Passerelle de transfert connectée en direct aux serveurs API Vodacom RDC. Taux de succès historique supérieur à 99.8% avec validation asynchrone ultra-stable.
-                </p>
-              </div>
-
-              <div
-                onMouseEnter={() => setActiveRail('airtel')}
-                onMouseLeave={() => setActiveRail('none')}
-                className="p-6 rounded-xl border cursor-pointer transition-all duration-300"
-                style={{
-                  border: activeRail === 'airtel' ? '1px solid #ec4899' : '1px solid rgba(255,255,255,0.06)',
-                  backgroundColor: activeRail === 'airtel' ? 'rgba(236, 72, 153, 0.04)' : 'rgba(255,255,255,0.01)',
-                }}
-              >
-                <h4 className="text-lg font-extrabold text-[#ec4899] mb-2">Airtel Money</h4>
-                <p className="text-gray-400 text-xs leading-relaxed">
-                  Canal direct connecté au réseau régional Airtel RDC. Assure une exécution instantanée avec basculement automatique sur canal auxiliaire en cas de congestion du réseau mobile.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- BLOCKCHAIN NETWORKS --- */}
-      <section id="networks" className="py-32 border-t border-white/5">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <SectionIntro
-            tagline="DISTRIBUTION BLOCKCHAIN"
-            title="Réseaux Pris en Charge"
-            description="Convertissez vos devises locales vers n'importe quel protocole cryptographique de votre choix."
-          />
-
-          <StaggerGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-            <InteractiveCard className="glass-panel p-6 shadow-lg">
-              <div className="text-[10px] font-extrabold text-emerald-400 uppercase mb-2 tracking-wider">
-                RECOMMANDÉ (RAPIDE)
-              </div>
-              <h4 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>TRC-20 (TRON)</h4>
-              <p className="text-gray-400 text-xs mb-6 leading-relaxed">
-                Le protocole de transfert d'USDT le plus économique. Idéal pour les paiements de montants standards avec des frais réseau quasi nuls.
-              </p>
-              <div className="flex flex-col gap-2 text-xs border-t border-white/5 pt-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Frais réseau :</span>
-                  <span className="text-emerald-400 font-bold">1.2 USDT</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Délai moyen :</span>
-                  <span className="text-white font-bold">~ 1 min</span>
-                </div>
-              </div>
-            </InteractiveCard>
-
-            <InteractiveCard className="glass-panel p-6 shadow-lg">
-              <div className="text-[10px] font-extrabold text-blue-400 uppercase mb-2 tracking-wider">
-                STANDARD
-              </div>
-              <h4 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>BEP-20 (BSC)</h4>
-              <p className="text-gray-400 text-xs mb-6 leading-relaxed">
-                Le réseau BNB Chain. Propose des frais fixes minimes et une excellente compatibilité avec les portefeuilles Trust Wallet et DeFi.
-              </p>
-              <div className="flex flex-col gap-2 text-xs border-t border-white/5 pt-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Frais réseau :</span>
-                  <span className="text-[#c29b68] font-bold">0.8 USDT</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Délai moyen :</span>
-                  <span className="text-white font-bold">~ 2 mins</span>
-                </div>
-              </div>
-            </InteractiveCard>
-
-            <InteractiveCard className="glass-panel p-6 shadow-lg">
-              <div className="text-[10px] font-extrabold text-gray-400 uppercase mb-2 tracking-wider">
-                HAUTE COMPATIBILITÉ
-              </div>
-              <h4 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>ERC-20 (Ethereum)</h4>
-              <p className="text-gray-400 text-xs mb-6 leading-relaxed">
-                Le réseau d'origine d'Ethereum. Offre une sécurité maximale pour les transferts professionnels de gros volumes.
-              </p>
-              <div className="flex flex-col gap-2 text-xs border-t border-white/5 pt-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Frais réseau :</span>
-                  <span className="text-rose-400 font-bold">4.5 USDT</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Délai moyen :</span>
-                  <span className="text-white font-bold">~ 5 mins</span>
-                </div>
-              </div>
-            </InteractiveCard>
-          </StaggerGrid>
-        </div>
-      </section>
-
-      {/* --- KYC PLAFONDS & TIERS GRID --- */}
-      <section id="kyc" className="py-32 border-t border-white/5 bg-[#02040a]/40">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <SectionIntro
-            tagline="LIMITES & NIVEAUX DE KYC"
-            title="Limites & Conformité"
-            description="Consultez nos paliers de vérification d'identité réglementaires pour augmenter vos capacités de transaction."
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-            <InteractiveCard className="glass-panel p-8 shadow-lg">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-xs font-bold text-[#c29b68]">TIER 1</span>
-                <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded text-[10px] font-bold">Inscription</span>
-              </div>
-              <h4 className="text-2xl font-extrabold mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>500 USD / jour</h4>
-              <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                Limite d'entrée idéale pour les besoins courants et les tests d'intégration rapides.
-              </p>
-              <div className="border-t border-white/5 pt-4 text-xs text-gray-400">
-                <strong>Exigences :</strong> Validation du numéro de téléphone par SMS/OTP.
-              </div>
-            </InteractiveCard>
-
-            <InteractiveCard className="glass-panel p-8 shadow-lg" style={{ border: '1.5px solid rgba(194, 155, 104, 0.4)' }}>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-xs font-bold text-[#c29b68]">TIER 2</span>
-                <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded text-[10px] font-bold">Recommandé</span>
-              </div>
-              <h4 className="text-2xl font-extrabold mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>5 000 USD / jour</h4>
-              <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                Idéal pour les traders actifs, les importateurs et les paiements commerciaux réguliers.
-              </p>
-              <div className="border-t border-white/5 pt-4 text-xs text-gray-400">
-                <strong>Exigences :</strong> Validation de la pièce d'identité officielle (Passeport / ID).
-              </div>
-            </InteractiveCard>
-
-            <InteractiveCard className="glass-panel p-8 shadow-lg">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-xs font-bold text-[#c29b68]">TIER 3</span>
-                <span className="px-2 py-0.5 bg-yellow-500/10 text-yellow-400 rounded text-[10px] font-bold">Sur Mesure</span>
-              </div>
-              <h4 className="text-2xl font-extrabold mb-2" style={{ fontFamily: "'Outfit', sans-serif" }}>Sans Limite</h4>
-              <p className="text-gray-400 text-xs leading-relaxed mb-6">
-                Pour les institutions financières, grands comptes de courtage et trésorerie d'entreprise.
-              </p>
-              <div className="border-t border-white/5 pt-4 text-xs text-gray-400">
-                <strong>Exigences :</strong> Justificatif de provenance des fonds & entretien visuel direct.
-              </div>
-            </InteractiveCard>
-          </div>
-        </div>
-      </section>
-
-      {/* --- SECURITY SECTION (VERIFY BEFORE TRANSFER) --- */}
-      <section id="security" className="py-32 border-t border-white/5 bg-rose-500/[0.01]">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <SectionIntro
-            tagline="SÉCURITÉ STRICTE"
-            title="Verify Before You Transfer"
-            description="Ne faites jamais confiance aux communications non vérifiées. Utilisez nos protocoles de sécurité."
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-16">
-            
-            {/* Warning Block */}
-            <div className="p-8 rounded-xl border border-rose-500/25 bg-rose-500/5 shadow-lg">
-              <div className="text-4xl mb-4">⚠️</div>
-              <h4 className="text-xl font-extrabold text-rose-500 mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                Mise en garde contre les fraudes
-              </h4>
-              <p className="text-rose-300 text-sm leading-relaxed">
-                <strong>ALMK ne vous demandera JAMAIS</strong> de fournir votre clé privée, votre phrase de récupération de portefeuille blockchain, ou votre code PIN confidentiel Mobile Money. Si un contact ou un agent prétend parler au nom d'ALMK et vous demande ces données, il s'agit d'une tentative d'arnaque. Veuillez immédiatement le signaler.
-              </p>
-            </div>
-
-            {/* Retro Cyber Security Terminal */}
-            <div className="cyber-terminal rounded-xl overflow-hidden flex flex-col shadow-2xl" style={{ minHeight: '340px' }}>
-              <div className="cyber-terminal-header">
-                <div>
-                  <span className="dot-btn bg-rose-500" />
-                  <span className="dot-btn bg-yellow-500" />
-                  <span className="dot-btn bg-emerald-500" />
-                  <span className="ml-2 opacity-80">secure-handshake.almk</span>
-                </div>
-                <span>v2.10-sec</span>
-              </div>
-
-              <div className="p-6 flex-1 flex flex-col justify-between relative">
-                {verifyStatus === 'scanning' && (
+            {/* Local Rails Panel */}
+            <div className="glass-panel p-8 border border-white/5 corner-ticks relative flex flex-col justify-between">
+              <div className="tick-tr" />
+              <div>
+                <h4 className="text-base font-extrabold text-white uppercase tracking-wider border-b border-white/5 pb-4 mb-6">
+                  🔌 RAILS D'ACCÈS LOCAUX
+                </h4>
+                <div className="flex flex-col gap-5">
                   <div
-                    className="verify-scan-line"
+                    onMouseEnter={() => setActiveRail('mpesa')}
+                    onMouseLeave={() => setActiveRail('none')}
+                    className="p-4 rounded border transition-all"
                     style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '2px',
-                      backgroundColor: '#10b981',
-                      boxShadow: '0 0 10px #10b981',
+                      borderColor: activeRail === 'mpesa' ? '#3b82f6' : 'rgba(255,255,255,0.05)',
+                      backgroundColor: activeRail === 'mpesa' ? 'rgba(59, 130, 246, 0.04)' : 'rgba(255,255,255,0.01)'
                     }}
-                  />
-                )}
+                  >
+                    <div className="font-extrabold text-[#3b82f6] text-xs font-mono mb-1">M-PESA VODACOM RDC</div>
+                    <div className="text-[10px] text-gray-400">Canal asynchrone principal. Taux de réussite: 99.8%.</div>
+                  </div>
 
+                  <div
+                    onMouseEnter={() => setActiveRail('airtel')}
+                    onMouseLeave={() => setActiveRail('none')}
+                    className="p-4 rounded border transition-all"
+                    style={{
+                      borderColor: activeRail === 'airtel' ? '#ec4899' : 'rgba(255,255,255,0.05)',
+                      backgroundColor: activeRail === 'airtel' ? 'rgba(236, 72, 153, 0.04)' : 'rgba(255,255,255,0.01)'
+                    }}
+                  >
+                    <div className="font-extrabold text-[#ec4899] text-xs font-mono mb-1">AIRTEL MONEY</div>
+                    <div className="text-[10px] text-gray-400">Passerelle de secours. Redondance multi-canaux active.</div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-[9px] font-mono text-gray-500 mt-8">SELECT_TELCO_RAIL: HOVER_TO_INSPECT</div>
+            </div>
+
+            {/* Blockchain Networks Panel */}
+            <div className="glass-panel p-8 border border-white/5 corner-ticks relative flex flex-col justify-between">
+              <div className="tick-tr" />
+              <div>
+                <h4 className="text-base font-extrabold text-white uppercase tracking-wider border-b border-white/5 pb-4 mb-6">
+                  🔗 PROTOCOLES CRYPTO
+                </h4>
+                <div className="flex flex-col gap-4 font-mono text-xs">
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-gray-400">TRC-20 (TRON) :</span>
+                    <span className="text-emerald-400 font-bold">1.2 USDT Gas | ~1 min</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-gray-400">BEP-20 (BSC) :</span>
+                    <span className="text-[#c29b68] font-bold">0.8 USDT Gas | ~2 mins</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">ERC-20 (ETH) :</span>
+                    <span className="text-rose-400 font-bold">4.5 USDT Gas | ~5 mins</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-gray-400 leading-relaxed mt-6">
+                  Par défaut, TRON (TRC-20) est recommandé pour assurer une rapidité optimale et minimiser les frais de transfert réseau blockchain.
+                </p>
+              </div>
+              <div className="text-[9px] font-mono text-gray-500 mt-8">TARGET_BLOCKCHAIN: TRON_MAINNET</div>
+            </div>
+
+            {/* KYC Compliance Levels Panel */}
+            <div className="glass-panel p-8 border border-white/5 corner-ticks relative flex flex-col justify-between">
+              <div className="tick-tr" />
+              <div>
+                <h4 className="text-base font-extrabold text-white uppercase tracking-wider border-b border-white/5 pb-4 mb-6">
+                  🛡️ LIMITES KYC & TIERS
+                </h4>
+                <div className="flex flex-col gap-4 text-xs">
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-white font-extrabold">TIER 1 (SMS)</span>
+                    <span className="text-[#c29b68] font-mono">500 USD / Jour</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-white font-extrabold">TIER 2 (Pièce ID)</span>
+                    <span className="text-[#c29b68] font-mono">5 000 USD / Jour</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white font-extrabold">TIER 3 (Justificatif)</span>
+                    <span className="text-emerald-400 font-mono">Illimité</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-gray-400 leading-relaxed mt-6">
+                  Paliers requis pour garantir le respect strict des réglementations en vigueur édictées par la Banque Centrale du Congo.
+                </p>
+              </div>
+              <div className="text-[9px] font-mono text-gray-500 mt-8">COMPLIANCE_LEVEL: REGULATED</div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          SECTION 5: SECURITY VERIFICATION (Verify Handshake)
+          ======================================================== */}
+      <section id="sécurité" className="relative min-h-screen flex items-center blueprint-border-b py-24 blueprint-section bg-rose-500/[0.01]">
+        <div className="absolute left-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+        <div className="absolute right-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+
+        <div className="max-w-[1400px] mx-auto w-full px-8 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          
+          {/* Warning Column */}
+          <div className="lg:col-span-6 reveal-on-scroll">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-[10px] font-extrabold tracking-[0.2em] text-rose-400 uppercase">05 / RISK PREVENT</span>
+            </div>
+            
+            <h2 className="text-4xl font-extrabold text-white mb-6 uppercase tracking-tight">Vigilance & Risques</h2>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              ALMK Flow emploie des signatures cryptographiques uniques. Ne faites confiance à aucune communication qui ne provient pas d'un canal officiel ou d'un agent enregistré.
+            </p>
+
+            <div className="p-6 rounded border border-rose-500/20 bg-rose-500/5">
+              <div className="text-2xl mb-2">⚠️ RULE_01</div>
+              <p className="text-rose-300/80 text-[11px] leading-relaxed">
+                ALMK ne vous demandera <strong>JAMAIS</strong> vos clés privées, codes PIN Mobile Money ou mots de passe. Protégez vos informations confidentielles contre toute tentative de phishing.
+              </p>
+            </div>
+          </div>
+
+          {/* Verification Console Column */}
+          <div className="lg:col-span-6 reveal-on-scroll">
+            <div className="cyber-terminal rounded-xl overflow-hidden flex flex-col shadow-2xl p-6 relative border border-[#10b981]/20">
+              {verifyStatus === 'scanning' && (
+                <div
+                  className="verify-scan-line"
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '2px',
+                    backgroundColor: '#10b981',
+                    boxShadow: '0 0 8px #10b981',
+                  }}
+                />
+              )}
+
+              <div className="flex justify-between items-center border-b border-[#10b981]/20 pb-4 mb-4">
+                <span className="text-[10px] font-mono text-[#10b981] uppercase tracking-widest">SIGNATURE_DECRYPTOR</span>
+                <span className="text-[9px] font-mono text-gray-500">v2.10-sec</span>
+              </div>
+
+              <div className="flex-1 flex flex-col justify-between font-mono text-[11px]">
                 <div>
-                  <p className="text-[#6ee7b7] text-xs mb-4">
-                    Saisissez l'adresse e-mail ou l'ID d'un agent ALMK pour vérifier sa signature cryptographique officielle :
+                  <p className="text-[#6ee7b7] text-[10px] mb-4">
+                    Saisissez l'ID ou le domaine d'un agent ALMK pour tester son intégrité cryptographique :
                   </p>
 
                   <form onSubmit={handleVerify} className="flex gap-2">
@@ -1087,12 +1006,12 @@ export default function Home() {
                       placeholder="Ex: agent-007 ou verify@almk.io"
                       value={verifyInput}
                       onChange={(e) => setVerifyInput(e.target.value)}
-                      className="flex-1 bg-black border border-[#10b981] text-[#6ee7b7] px-3 py-2 rounded font-mono text-xs outline-none"
+                      className="flex-1 bg-black border border-[#10b981]/40 text-[#6ee7b7] px-3.5 py-2 rounded text-xs outline-none focus:border-[#10b981]"
                     />
                     <button
                       type="submit"
                       disabled={verifyStatus === 'scanning'}
-                      className="bg-[#10b981] text-[#02040a] px-4 py-2 rounded font-mono font-bold text-xs border-none cursor-pointer"
+                      className="bg-[#10b981] text-black px-4 py-2 rounded font-bold text-xs border-none cursor-pointer"
                     >
                       Scanner
                     </button>
@@ -1100,20 +1019,20 @@ export default function Home() {
                 </div>
 
                 {verifyStatus !== 'idle' && (
-                  <div className="mt-6 bg-black/40 border border-[#10b981]/30 p-4 rounded text-xs text-[#6ee7b7] animate-slide-up">
-                    <div className="border-b border-[#10b981]/20 pb-2 mb-2 flex justify-between font-bold">
-                      <span>CONSOLE DE SÉCURITÉ</span>
+                  <div className="mt-6 bg-black/40 border border-[#10b981]/20 p-4 rounded text-[#6ee7b7]">
+                    <div className="flex justify-between font-bold border-b border-[#10b981]/10 pb-2 mb-2">
+                      <span>VERIFICATION LOG</span>
                       <span className={verifyStatus === 'scanning' ? 'text-blue-400' : verifyResult === 'OFFICIAL' ? 'text-emerald-400' : 'text-rose-500'}>
                         {verifyStatus === 'scanning' ? 'ANALYSING...' : 'FINISH'}
                       </span>
                     </div>
-                    <div>&gt; target_identity: {verifyInput}</div>
+                    <div>&gt; TARGET_NODE: {verifyInput}</div>
                     {verifyStatus === 'scanning' ? (
-                      <div>&gt; decrypting_signatures: PENDING...</div>
+                      <div>&gt; DECRYPTING... PENDING</div>
                     ) : (
                       <>
-                        <div>&gt; signature: {verifyResult === 'OFFICIAL' ? 'OFFICIAL_ALMK_SIGNATURE' : verifyResult === 'SUSPICIOUS' ? 'WARN_SUSPICIOUS_THREAT' : 'NOT_FOUND_NODE'}</div>
-                        <div className="flex justify-between mt-3 font-bold text-sm">
+                        <div>&gt; NODE_SIGNATURE: {verifyResult === 'OFFICIAL' ? 'ALMK_VERIFIED_SIGNATURE' : verifyResult === 'SUSPICIOUS' ? 'ALERT_DUBIOUS_SIGNATURE' : 'NOT_FOUND_NODE'}</div>
+                        <div className="flex justify-between mt-3 font-bold text-xs border-t border-[#10b981]/10 pt-2">
                           <span>VERDICT_DECRYPTION:</span>
                           <span className={verifyResult === 'OFFICIAL' ? 'text-emerald-400' : verifyResult === 'SUSPICIOUS' ? 'text-rose-500' : 'text-yellow-500'}>
                             {verifyDecryptedText}
@@ -1125,159 +1044,139 @@ export default function Home() {
                 )}
               </div>
             </div>
-
           </div>
+
         </div>
       </section>
 
-      {/* --- TARIFICATION --- */}
-      <section id="tarifs" className="py-32 border-t border-white/5">
-        <div className="max-w-[1200px] mx-auto px-8">
-          <SectionIntro
-            tagline="TRANSPARENCE TOTALE DES COÛTS"
-            title="Pas de Frais Cachés"
-            description="Le détail exact de notre tarification, sans marge cachée sur le taux de change global."
-          />
+      {/* ========================================================
+          SECTION 6: TARIFICATION & FAQ & FOOTER
+          ======================================================== */}
+      <section id="tarifs" className="relative blueprint-section py-24">
+        <div className="absolute left-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
+        <div className="absolute right-[8%] top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden md:block" />
 
-          <div
-            ref={calcRowRef}
-            className="flex flex-col gap-6 bg-white/[0.01] border border-white/5 rounded-xl p-8 mt-16"
-          >
-            {quality !== 'ESSENTIAL' && (
-              <div
-                className="calc-connector-line"
-                style={{
-                  height: '2px',
-                  background: 'linear-gradient(90deg, #c29b68, #3b82f6, #ec4899, #10b981)',
-                  width: '100%',
-                  borderRadius: '2px',
-                  transformOrigin: 'left center',
-                }}
-              />
-            )}
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div>
-                <span className="text-[10px] text-[#c29b68] font-bold">TAUX DE RÉFÉRENCE BINANCE</span>
-                <div className="text-xl font-extrabold mt-1">Index temps réel</div>
-              </div>
-
-              <div>
-                <span className="text-[10px] text-blue-400 font-bold">MARGE OPÉRATIONNELLE</span>
-                <div className="text-xl font-extrabold mt-1">1.5% fixe</div>
-              </div>
-
-              <div>
-                <span className="text-[10px] text-pink-400 font-bold">COMMISSION OPÉRATEUR RDC</span>
-                <div className="text-xl font-extrabold mt-1">0% inclus</div>
-              </div>
-
-              <div>
-                <span className="text-[10px] text-emerald-400 font-bold">GAS FEE BLOCKCHAIN</span>
-                <div className="text-xl font-extrabold mt-1">1.2 USDT fixe</div>
-              </div>
-            </div>
-
-            <div className="w-full h-px bg-white/10 my-4" />
-
-            <div className="flex justify-between items-center flex-wrap gap-4">
-              <span className="text-sm font-bold text-gray-400">Notre engagement de transparence :</span>
-              <span className="text-2xl font-extrabold text-emerald-400">
-                Aucune marge cachée
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- FAQ SECTION --- */}
-      <section id="faq" className="py-32 border-t border-white/5 bg-[#02040a]/40">
-        <div className="max-w-[800px] mx-auto px-8">
-          <SectionIntro
-            tagline="FAQ"
-            title="Des questions ?"
-            description="Retrouvez toutes les réponses concernant les transferts locaux et les délais de distribution."
-          />
-
-          <div className="flex flex-col gap-4 mt-16">
+        <div className="max-w-[1400px] mx-auto px-8 border-t border-white/5 pt-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             
-            {/* FAQ 1 */}
-            <div className="border border-white/5 rounded-lg bg-white/[0.01] overflow-hidden">
-              <div
-                onClick={() => setActiveFaq(activeFaq === 0 ? null : 0)}
-                className="p-5 flex justify-between items-center cursor-pointer font-bold"
-              >
-                <span>Quel est le délai moyen de réception des USDT ?</span>
-                <span>{activeFaq === 0 ? '−' : '+'}</span>
+            {/* Pricing Details */}
+            <div className="lg:col-span-5 reveal-on-scroll">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#c29b68] uppercase">06 / COST ACCURACY</span>
               </div>
-              {activeFaq === 0 && (
-                <div className="px-5 pb-5 text-gray-400 text-xs leading-relaxed animate-fade-in">
-                  Dans plus de 90% des cas, vos USDT sont envoyés en moins de 3 minutes après réception de votre dépôt Mobile Money. Parfois, lors d'une forte congestion de la blockchain, cela peut prendre jusqu'à 10 minutes.
+              <h2 className="text-3xl font-extrabold text-white mb-6 uppercase tracking-tight">Index Tarifs Fixes</h2>
+              <p className="text-gray-400 text-sm leading-relaxed mb-8">
+                Taux de base interbancaire avec une transparence de frais garantie, sans surcharge inattendue.
+              </p>
+
+              <div className="flex flex-col gap-4 font-mono text-xs">
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-gray-400">Index Marché :</span>
+                  <span className="text-white">Binance live feed</span>
                 </div>
-              )}
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-gray-400">Marge ALMK :</span>
+                  <span className="text-[#c29b68] font-bold">1.5% fixe</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-gray-400">Marge Opérateurs Telco :</span>
+                  <span className="text-white">0% (Intégré)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Réseau Blockchain Gas :</span>
+                  <span className="text-emerald-400 font-bold">1.2 USDT fixe</span>
+                </div>
+              </div>
             </div>
 
-            {/* FAQ 2 */}
-            <div className="border border-white/5 rounded-lg bg-white/[0.01] overflow-hidden">
-              <div
-                onClick={() => setActiveFaq(activeFaq === 1 ? null : 1)}
-                className="p-5 flex justify-between items-center cursor-pointer font-bold"
-              >
-                <span>Est-il possible d'utiliser un autre réseau que TRON (TRC-20) ?</span>
-                <span>{activeFaq === 1 ? '−' : '+'}</span>
+            {/* Accordion FAQ Column */}
+            <div className="lg:col-span-7 reveal-on-scroll">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[10px] font-extrabold tracking-[0.2em] text-[#c29b68] uppercase">07 / ACCORDION HELPDESK</span>
               </div>
-              {activeFaq === 1 && (
-                <div className="px-5 pb-5 text-gray-400 text-xs leading-relaxed animate-fade-in">
-                  Oui, nous supportons également les réseaux BEP-20 (Binance Smart Chain) et ERC-20 (Ethereum). Par défaut, notre simulateur utilise le réseau TRON (TRC-20) en raison de ses frais de gaz exceptionnellement bas.
+              <h2 className="text-3xl font-extrabold text-white mb-8 uppercase tracking-tight">Questions Fréquentes</h2>
+
+              <div className="flex flex-col gap-3">
+                {/* Accordion 1 */}
+                <div className="border border-white/5 rounded bg-black/20 overflow-hidden">
+                  <div
+                    onClick={() => setActiveFaq(activeFaq === 0 ? null : 0)}
+                    className="p-4 flex justify-between items-center cursor-pointer font-bold text-xs uppercase tracking-wider"
+                  >
+                    <span>Délai moyen de traitement Mobile Money ?</span>
+                    <span className="text-gray-400">{activeFaq === 0 ? '−' : '+'}</span>
+                  </div>
+                  {activeFaq === 0 && (
+                    <div className="px-4 pb-4 text-gray-400 text-xs leading-relaxed animate-fade-in font-sans">
+                      Les transactions de Mobile money sont traitées de manière synchrone par nos connexions API avec Airtel & M-Pesa. Vos tokens USDT arrivent sur votre adresse de destination dans un délai de 3 minutes environ.
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Accordion 2 */}
+                <div className="border border-white/5 rounded bg-black/20 overflow-hidden">
+                  <div
+                    onClick={() => setActiveFaq(activeFaq === 1 ? null : 1)}
+                    className="p-4 flex justify-between items-center cursor-pointer font-bold text-xs uppercase tracking-wider"
+                  >
+                    <span>Puis-je utiliser d'autres réseaux blockchain ?</span>
+                    <span className="text-gray-400">{activeFaq === 1 ? '−' : '+'}</span>
+                  </div>
+                  {activeFaq === 1 && (
+                    <div className="px-4 pb-4 text-gray-400 text-xs leading-relaxed animate-fade-in font-sans">
+                      Oui, nous supportons également les réseaux BEP-20 (Binance Smart Chain) et ERC-20 (Ethereum). Par défaut, notre simulateur utilise le réseau TRON (TRC-20) en raison de ses frais de gaz exceptionnellement bas.
+                    </div>
+                  )}
+                </div>
+
+                {/* Accordion 3 */}
+                <div className="border border-white/5 rounded bg-black/20 overflow-hidden">
+                  <div
+                    onClick={() => setActiveFaq(activeFaq === 2 ? null : 2)}
+                    className="p-4 flex justify-between items-center cursor-pointer font-bold text-xs uppercase tracking-wider"
+                  >
+                    <span>Comment joindre le support technique d'ALMK ?</span>
+                    <span className="text-gray-400">{activeFaq === 2 ? '−' : '+'}</span>
+                  </div>
+                  {activeFaq === 2 && (
+                    <div className="px-4 pb-4 text-gray-400 text-xs leading-relaxed animate-fade-in font-sans">
+                      Notre équipe support est disponible par ticket depuis votre espace client (Dashboard) 24h/24 et 7j/7 ou directement par courriel.
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
-            {/* FAQ 3 */}
-            <div className="border border-white/5 rounded-lg bg-white/[0.01] overflow-hidden">
-              <div
-                onClick={() => setActiveFaq(activeFaq === 2 ? null : 2)}
-                className="p-5 flex justify-between items-center cursor-pointer font-bold"
-              >
-                <span>Comment contacter l'assistance en cas de problème ?</span>
-                <span>{activeFaq === 2 ? '−' : '+'}</span>
-              </div>
-              {activeFaq === 2 && (
-                <div className="px-5 pb-5 text-gray-400 text-xs leading-relaxed animate-fade-in">
-                  Notre équipe support est à votre écoute 24h/24 par ticket directement dans votre espace client, ou par chat officiel sur notre passerelle sécurisée.
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </section>
 
-      {/* --- FOOTER --- */}
-      <footer className="border-t border-white/10 py-20 text-gray-400 text-xs">
-        <div className="max-w-[1200px] mx-auto px-8 flex flex-col gap-12">
+      {/* --- FOOTER & TRUST GRID --- */}
+      <footer className="border-t border-white/10 py-16 text-gray-400 text-xs">
+        <div className="max-w-[1400px] mx-auto px-8 flex flex-col gap-12">
           
           {/* Regulatory Trust Icons Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-white/5 pb-12">
-            <div>
-              <h5 className="text-white font-extrabold mb-2">🔐 Sécurité Séquestre</h5>
+            <div className="border-l border-white/5 pl-4">
+              <h5 className="text-white font-extrabold text-[11px] uppercase tracking-wider mb-2">🔐 Sécurité Séquestre</h5>
               <p className="text-[10px] leading-relaxed">
                 Toutes les transactions CDF transitent par des comptes séquestres locaux certifiés.
               </p>
             </div>
-            <div>
-              <h5 className="text-white font-extrabold mb-2">💼 Garde Institutionnelle</h5>
+            <div className="border-l border-white/5 pl-4">
+              <h5 className="text-white font-extrabold text-[11px] uppercase tracking-wider mb-2">💼 Garde Institutionnelle</h5>
               <p className="text-[10px] leading-relaxed">
                 Les réserves d'USDT sont gardées sur des portefeuilles multi-signature Fireblocks conformes.
               </p>
             </div>
-            <div>
-              <h5 className="text-white font-extrabold mb-2">🏛️ Régulé & Conforme</h5>
+            <div className="border-l border-white/5 pl-4">
+              <h5 className="text-white font-extrabold text-[11px] uppercase tracking-wider mb-2">🏛️ Régulé & Conforme</h5>
               <p className="text-[10px] leading-relaxed">
                 Conformité stricte aux exigences de la Banque Centrale du Congo (BCC) et de la CENAREF.
               </p>
             </div>
-            <div>
-              <h5 className="text-white font-extrabold mb-2">💳 Certification PCI-DSS</h5>
+            <div className="border-l border-white/5 pl-4">
+              <h5 className="text-white font-extrabold text-[11px] uppercase tracking-wider mb-2">💳 Certification PCI-DSS</h5>
               <p className="text-[10px] leading-relaxed">
                 Standard international le plus élevé pour le chiffrement des données de paiement.
               </p>
@@ -1287,32 +1186,32 @@ export default function Home() {
           {/* Main Footer Links */}
           <div className="flex flex-col md:flex-row md:justify-between gap-8">
             <div>
-              <div className="text-white font-extrabold text-lg mb-2 tracking-wider">
+              <div className="text-white font-extrabold text-base mb-2 tracking-widest uppercase">
                 ALMK <span className="text-[#c29b68]">FLOW</span>
               </div>
-              <p className="max-w-xs leading-relaxed">
+              <p className="max-w-xs leading-relaxed text-[11px]">
                 La passerelle financière cinématique et ultrasécurisée reliant l'Afrique Centrale à la blockchain globale.
               </p>
             </div>
             <div className="flex gap-16 flex-wrap">
-              <div className="flex flex-col gap-2">
-                <span className="font-extrabold text-white">Ressources</span>
+              <div className="flex flex-col gap-2 font-mono text-[10px]">
+                <span className="font-extrabold text-white uppercase tracking-wider mb-1">Ressources</span>
                 <a href="#devis" className="hover:text-white no-underline text-gray-400">Calculateur</a>
-                <a href="#kyc" className="hover:text-white no-underline text-gray-400">Limites KYC</a>
-                <a href="#security" className="hover:text-white no-underline text-gray-400">Verify-Handshake</a>
+                <a href="#technique" className="hover:text-white no-underline text-gray-400">Fiche Technique</a>
+                <a href="#sécurité" className="hover:text-white no-underline text-gray-400">Verify-Handshake</a>
                 <a href="#tarifs" className="hover:text-white no-underline text-gray-400">Tarifs</a>
               </div>
-              <div className="flex flex-col gap-2">
-                <span className="font-extrabold text-white">Légal</span>
-                <a href="#" className="hover:text-white no-underline text-gray-400">Politique de Confidentialité</a>
-                <a href="#" className="hover:text-white no-underline text-gray-400">Conditions Générales (CGU)</a>
+              <div className="flex flex-col gap-2 font-mono text-[10px]">
+                <span className="font-extrabold text-white uppercase tracking-wider mb-1">Légal</span>
+                <a href="#" className="hover:text-white no-underline text-gray-400">Confidentialité</a>
+                <a href="#" className="hover:text-white no-underline text-gray-400">CGU</a>
                 <a href="#" className="hover:text-white no-underline text-gray-400">Mentions Légales</a>
               </div>
             </div>
           </div>
 
-          <div className="text-center mt-4 border-t border-white/5 pt-8 text-[10px]">
-            &copy; {new Date().getFullYear()} ALMK Flow. Tous droits réservés.
+          <div className="text-center mt-4 border-t border-white/5 pt-8 text-[9px] font-mono">
+            &copy; {new Date().getFullYear()} ALMK Flow. TOUS DROITS RÉSERVÉS.
           </div>
         </div>
       </footer>

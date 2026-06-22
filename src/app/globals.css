@@ -311,3 +311,106 @@ h1, h2, h3, h4, .title-font {
   50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 6px var(--success); }
   100% { transform: scale(0.9); opacity: 0.5; }
 }
+
+/* Landonorris-style cinematic elements */
+.blueprint-grid {
+  display: grid;
+  border-collapse: collapse;
+}
+
+.blueprint-border {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.blueprint-border-b {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.blueprint-border-t {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.blueprint-border-l {
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.blueprint-border-r {
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* outline text */
+.text-outline-premium {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.15);
+  color: transparent;
+  text-shadow: none;
+}
+
+/* corner ticks */
+.corner-ticks {
+  position: relative;
+}
+
+.corner-ticks::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 1.5px solid var(--accent-bronze);
+  border-left: 1.5px solid var(--accent-bronze);
+  pointer-events: none;
+}
+
+.corner-ticks::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 1.5px solid var(--accent-bronze);
+  border-right: 1.5px solid var(--accent-bronze);
+  pointer-events: none;
+}
+
+.tick-tr {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 1.5px solid var(--accent-bronze);
+  border-right: 1.5px solid var(--accent-bronze);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.tick-bl {
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 1.5px solid var(--accent-bronze);
+  border-left: 1.5px solid var(--accent-bronze);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Navigation sidebar styling for immersive layouts */
+.side-nav-bar {
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(2, 4, 10, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+/* Premium text animations & sizing */
+.display-title {
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
